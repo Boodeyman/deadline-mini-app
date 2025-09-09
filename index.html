@@ -81,13 +81,16 @@
         .form-group textarea {
             width: 100%;
             padding: 15px;
-            border: 2px solid rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
             border-radius: 12px;
             font-size: 16px;
-            background: rgba(255, 255, 255, 0.1);
-            color: #ffffff;
+            background: rgba(0, 0, 0, 0.4) !important;
+            color: #ffffff !important;
             backdrop-filter: blur(10px);
             transition: all 0.3s ease;
+            -webkit-text-fill-color: #ffffff !important;
+            -webkit-appearance: none;
+            appearance: none;
         }
 
         .form-group input:focus,
@@ -96,29 +99,47 @@
             border-color: #4facfe;
             box-shadow: 0 0 20px rgba(79, 172, 254, 0.3);
             transform: translateY(-2px);
-            color: #ffffff;
-            background: rgba(255, 255, 255, 0.15);
+            color: #ffffff !important;
+            background: rgba(0, 0, 0, 0.6) !important;
+            -webkit-text-fill-color: #ffffff !important;
         }
 
         .form-group input::placeholder,
         .form-group textarea::placeholder {
-            color: rgba(255, 255, 255, 0.6);
+            color: rgba(255, 255, 255, 0.7) !important;
+            -webkit-text-fill-color: rgba(255, 255, 255, 0.7) !important;
         }
 
-        /* Fix for datetime-local input */
-        .form-group input[type="datetime-local"] {
+        /* Force all input states to have white text */
+        .form-group input:not(:placeholder-shown),
+        .form-group input:valid,
+        .form-group input:invalid,
+        .form-group textarea:not(:placeholder-shown),
+        .form-group textarea:valid,
+        .form-group textarea:invalid {
             color: #ffffff !important;
-            background: rgba(255, 255, 255, 0.1) !important;
+            -webkit-text-fill-color: #ffffff !important;
+            background: rgba(0, 0, 0, 0.4) !important;
         }
 
-        .form-group input[type="datetime-local"]::-webkit-calendar-picker-indicator {
-            filter: invert(1);
-            opacity: 0.8;
-        }
-
-        /* Ensure all input text is white */
-        .form-group input:not(:placeholder-shown) {
+        /* Specific datetime-local fixes */
+        input[type="datetime-local"] {
             color: #ffffff !important;
+            background: rgba(0, 0, 0, 0.4) !important;
+            -webkit-text-fill-color: #ffffff !important;
+        }
+
+        input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+            filter: invert(1) brightness(0.8);
+            opacity: 1;
+        }
+
+        /* Force text inputs */
+        input[type="text"],
+        textarea {
+            color: #ffffff !important;
+            background: rgba(0, 0, 0, 0.4) !important;
+            -webkit-text-fill-color: #ffffff !important;
         }
 
         .form-group textarea {
