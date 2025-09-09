@@ -519,14 +519,14 @@
         }
 
         function updateStats() {
-            const completed = JSON.parse(localStorage.getItem('completedDeadlines') || '[]');
             const overdue = deadlines.filter(d => getDeadlineStatus(d) === 'overdue').length;
             const today = deadlines.filter(d => getDeadlineStatus(d) === 'today').length;
+            const urgent = deadlines.filter(d => getDeadlineStatus(d) === 'urgent').length;
 
             document.getElementById('totalActive').textContent = deadlines.length;
             document.getElementById('overdueCount').textContent = overdue;
             document.getElementById('todayCount').textContent = today;
-            document.getElementById('completedCount').textContent = completed.length;
+            document.getElementById('urgentCount').textContent = urgent;
 
             statsContainer.style.display = deadlines.length > 0 ? 'grid' : 'none';
         }
