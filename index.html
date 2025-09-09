@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Deadline Manager</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <title>Deadline Manager - Simple Version</title>
     <style>
         * {
             margin: 0;
@@ -14,437 +13,347 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
-            background: var(--tg-theme-bg-color, #ffffff);
-            color: var(--tg-theme-text-color, #000000);
-            padding: 16px;
+            background: #1a1a1a;
+            color: #ffffff;
+            padding: 20px;
             min-height: 100vh;
         }
 
         .container {
-            max-width: 100%;
+            max-width: 600px;
             margin: 0 auto;
         }
 
         .header {
             text-align: center;
-            margin-bottom: 24px;
-            padding-bottom: 16px;
-            border-bottom: 1px solid var(--tg-theme-hint-color, #e0e0e0);
+            margin-bottom: 30px;
         }
 
-        .header h1 {
-            font-size: 24px;
-            font-weight: 600;
-            margin-bottom: 8px;
-        }
-
-        .header p {
-            color: var(--tg-theme-hint-color, #666666);
-            font-size: 14px;
-        }
-
-        .add-form {
-            background: var(--tg-theme-secondary-bg-color, #f8f9fa);
+        .form-section {
+            background: #2a2a2a;
             border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 24px;
-            border: 1px solid var(--tg-theme-hint-color, #e0e0e0);
+            padding: 25px;
+            margin-bottom: 25px;
         }
 
         .form-group {
-            margin-bottom: 16px;
+            margin-bottom: 20px;
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 6px;
-            font-weight: 500;
-            font-size: 14px;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #ffffff;
         }
 
         .form-group input,
         .form-group textarea {
             width: 100%;
             padding: 12px;
-            border: 1px solid var(--tg-theme-hint-color, #e0e0e0);
+            border: 2px solid #444;
             border-radius: 8px;
             font-size: 16px;
-            background: var(--tg-theme-bg-color, #ffffff);
-            color: var(--tg-theme-text-color, #000000);
+            background: #1a1a1a;
+            color: #ffffff;
         }
 
-        .form-group textarea {
-            resize: vertical;
-            min-height: 80px;
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #007AFF;
         }
 
         .btn {
-            background: var(--tg-theme-button-color, #007AFF);
-            color: var(--tg-theme-button-text-color, #ffffff);
+            background: #007AFF;
+            color: white;
             border: none;
-            padding: 12px 24px;
+            padding: 15px 30px;
             border-radius: 8px;
             font-size: 16px;
-            font-weight: 500;
+            font-weight: 600;
             cursor: pointer;
             width: 100%;
-            transition: opacity 0.2s;
         }
 
         .btn:hover {
-            opacity: 0.8;
-        }
-
-        .btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
+            background: #0056d3;
         }
 
         .deadline-list {
-            margin-top: 24px;
+            margin-top: 30px;
         }
 
         .deadline-item {
-            background: var(--tg-theme-secondary-bg-color, #f8f9fa);
+            background: #2a2a2a;
             border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 12px;
-            border: 1px solid var(--tg-theme-hint-color, #e0e0e0);
-            position: relative;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-left: 4px solid #007AFF;
         }
 
         .deadline-item.overdue {
-            border-left: 4px solid #FF3B30;
+            border-left-color: #FF3B30;
         }
 
         .deadline-item.today {
-            border-left: 4px solid #FF9500;
+            border-left-color: #FF9500;
         }
 
         .deadline-item.urgent {
-            border-left: 4px solid #FFCC00;
+            border-left-color: #FFCC00;
         }
 
         .deadline-item.soon {
-            border-left: 4px solid #34C759;
-        }
-
-        .deadline-header {
-            display: flex;
-            justify-content: between;
-            align-items: flex-start;
-            margin-bottom: 8px;
+            border-left-color: #34C759;
         }
 
         .deadline-title {
+            font-size: 18px;
             font-weight: 600;
-            font-size: 16px;
-            flex: 1;
-            margin-right: 12px;
+            margin-bottom: 8px;
+        }
+
+        .deadline-date {
+            color: #999;
+            margin-bottom: 5px;
         }
 
         .deadline-status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 16px;
             font-size: 12px;
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-weight: 500;
-            white-space: nowrap;
+            font-weight: 600;
+            margin-bottom: 15px;
         }
 
-        .status-overdue {
+        .status-overdue { background: #FF3B30; color: white; }
+        .status-today { background: #FF9500; color: white; }
+        .status-urgent { background: #FFCC00; color: black; }
+        .status-soon { background: #34C759; color: white; }
+        .status-planned { background: #007AFF; color: white; }
+
+        .complete-btn {
+            background: #34C759;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .complete-btn:hover {
+            background: #28a745;
+        }
+
+        .message {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .message.success {
+            background: #34C759;
+            color: white;
+        }
+
+        .message.error {
             background: #FF3B30;
             color: white;
         }
 
-        .status-today {
-            background: #FF9500;
-            color: white;
-        }
-
-        .status-urgent {
-            background: #FFCC00;
-            color: black;
-        }
-
-        .status-soon {
-            background: #34C759;
-            color: white;
-        }
-
-        .status-planned {
-            background: #007AFF;
-            color: white;
-        }
-
-        .deadline-date {
-            font-size: 14px;
-            color: var(--tg-theme-hint-color, #666666);
-            margin-bottom: 4px;
-        }
-
-        .deadline-description {
-            font-size: 14px;
-            color: var(--tg-theme-hint-color, #666666);
-            margin-bottom: 12px;
-        }
-
-        .deadline-actions {
-            display: flex;
-            gap: 8px;
-        }
-
-        .btn-small {
-            padding: 8px 16px;
-            font-size: 14px;
-            border-radius: 6px;
-            border: none;
-            cursor: pointer;
-            font-weight: 500;
-            transition: opacity 0.2s;
-        }
-
-        .btn-complete {
-            background: #34C759;
-            color: white;
-        }
-
-        .btn-complete:hover {
-            opacity: 0.8;
-        }
-
         .empty-state {
             text-align: center;
-            padding: 40px 20px;
-            color: var(--tg-theme-hint-color, #666666);
-        }
-
-        .empty-state-icon {
-            font-size: 48px;
-            margin-bottom: 16px;
+            padding: 40px;
+            color: #999;
         }
 
         .stats {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 12px;
-            margin-bottom: 24px;
+            gap: 15px;
+            margin-bottom: 25px;
         }
 
         .stat-item {
-            background: var(--tg-theme-secondary-bg-color, #f8f9fa);
+            background: #2a2a2a;
             border-radius: 8px;
-            padding: 12px;
+            padding: 15px;
             text-align: center;
-            border: 1px solid var(--tg-theme-hint-color, #e0e0e0);
         }
 
         .stat-number {
-            font-size: 20px;
-            font-weight: 600;
-            margin-bottom: 4px;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 5px;
         }
 
         .stat-label {
             font-size: 12px;
-            color: var(--tg-theme-hint-color, #666666);
-        }
-
-        .loading {
-            text-align: center;
-            padding: 20px;
-        }
-
-        .spinner {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 2px solid var(--tg-theme-hint-color, #e0e0e0);
-            border-radius: 50%;
-            border-top-color: var(--tg-theme-button-color, #007AFF);
-            animation: spin 1s ease-in-out infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        .success-message {
-            background: #34C759;
-            color: white;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 16px;
-            text-align: center;
-            font-weight: 500;
-        }
-
-        .error-message {
-            background: #FF3B30;
-            color: white;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 16px;
-            text-align: center;
-            font-weight: 500;
+            color: #999;
+            text-transform: uppercase;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>🎯 Deadline Manager</h1>
-            <p>Manage your deadlines efficiently</p>
+            <h1>📅 Deadline Manager</h1>
+            <p>Simple deadline tracking</p>
         </div>
 
-        <div id="messageContainer"></div>
+        <div id="message-container"></div>
 
-        <div class="add-form">
-            <h2 style="margin-bottom: 16px; font-size: 18px;">➕ Add New Deadline</h2>
-            <form id="addDeadlineForm">
+        <div class="form-section">
+            <h2>Add New Deadline</h2>
+            <form id="deadline-form">
                 <div class="form-group">
-                    <label for="title">Task Title</label>
-                    <input type="text" id="title" placeholder="Enter task title" required>
+                    <label for="task-title">Task Title</label>
+                    <input type="text" id="task-title" placeholder="Enter task title" required>
                 </div>
+
                 <div class="form-group">
-                    <label for="date">Due Date</label>
-                    <input type="datetime-local" id="date" required>
+                    <label for="task-date">Due Date & Time</label>
+                    <input type="datetime-local" id="task-date" required>
                 </div>
+
                 <div class="form-group">
-                    <label for="description">Description (Optional)</label>
-                    <textarea id="description" placeholder="Enter task description"></textarea>
+                    <label for="task-description">Description (Optional)</label>
+                    <textarea id="task-description" rows="3" placeholder="Enter task description"></textarea>
                 </div>
-                <button type="submit" class="btn" id="addBtn">Add Deadline</button>
+
+                <button type="submit" class="btn">Add Deadline</button>
             </form>
         </div>
 
-        <div class="stats" id="statsContainer" style="display: none;">
+        <div class="stats" id="stats-container" style="display: none;">
             <div class="stat-item">
-                <div class="stat-number" id="totalActive">0</div>
-                <div class="stat-label">Active</div>
+                <div class="stat-number" id="total-count">0</div>
+                <div class="stat-label">Total</div>
             </div>
             <div class="stat-item">
-                <div class="stat-number" id="overdueCount">0</div>
+                <div class="stat-number" id="overdue-count">0</div>
                 <div class="stat-label">Overdue</div>
             </div>
             <div class="stat-item">
-                <div class="stat-number" id="todayCount">0</div>
+                <div class="stat-number" id="today-count">0</div>
                 <div class="stat-label">Due Today</div>
             </div>
             <div class="stat-item">
-                <div class="stat-number" id="completedCount">0</div>
-                <div class="stat-label">Completed</div>
+                <div class="stat-number" id="urgent-count">0</div>
+                <div class="stat-label">Urgent</div>
             </div>
         </div>
 
         <div class="deadline-list">
-            <h2 style="margin-bottom: 16px; font-size: 18px;">📋 Your Deadlines</h2>
-            <div id="deadlineContainer">
-                <div class="loading">
-                    <div class="spinner"></div>
-                    <p style="margin-top: 12px;">Loading deadlines...</p>
+            <h2>Your Deadlines</h2>
+            <div id="deadlines-container">
+                <div class="empty-state">
+                    <h3>No deadlines yet</h3>
+                    <p>Add your first deadline using the form above</p>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // Initialize Telegram Web App
-        const tg = window.Telegram.WebApp;
-        tg.ready();
-
-        // Mock data storage (in real app, this would connect to your bot)
+        // Simple data storage
         let deadlines = [];
         let nextId = 1;
 
         // DOM elements
-        const form = document.getElementById('addDeadlineForm');
-        const deadlineContainer = document.getElementById('deadlineContainer');
-        const messageContainer = document.getElementById('messageContainer');
-        const statsContainer = document.getElementById('statsContainer');
+        const form = document.getElementById('deadline-form');
+        const container = document.getElementById('deadlines-container');
+        const messageContainer = document.getElementById('message-container');
+        const statsContainer = document.getElementById('stats-container');
 
-        // Initialize the app
+        // Initialize
         init();
 
         function init() {
-            loadDeadlines();
-            setupEventListeners();
             setDefaultDate();
+            loadData();
+            setupEventListeners();
+            render();
+        }
+
+        function setupEventListeners() {
+            form.addEventListener('submit', handleSubmit);
         }
 
         function setDefaultDate() {
             const now = new Date();
-            now.setHours(now.getHours() + 1); // Default to 1 hour from now
-            document.getElementById('date').value = now.toISOString().slice(0, 16);
+            now.setHours(now.getHours() + 1);
+            now.setMinutes(0);
+            now.setSeconds(0);
+
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+
+            document.getElementById('task-date').value = `${year}-${month}-${day}T${hours}:${minutes}`;
         }
 
-        function setupEventListeners() {
-            form.addEventListener('submit', handleAddDeadline);
-        }
-
-        function handleAddDeadline(e) {
+        function handleSubmit(e) {
             e.preventDefault();
 
-            const title = document.getElementById('title').value.trim();
-            const dateValue = document.getElementById('date').value;
-            const description = document.getElementById('description').value.trim();
+            const title = document.getElementById('task-title').value.trim();
+            const dateValue = document.getElementById('task-date').value;
+            const description = document.getElementById('task-description').value.trim();
 
-            if (!title || !dateValue) {
-                showMessage('Please fill in all required fields', 'error');
+            // Validation
+            if (!title) {
+                showMessage('Please enter a task title', 'error');
                 return;
             }
 
+            if (!dateValue) {
+                showMessage('Please select a due date', 'error');
+                return;
+            }
+
+            // Create deadline
             const deadline = {
                 id: nextId++,
-                title,
+                title: title,
                 date: new Date(dateValue),
-                description,
-                completed: false,
+                description: description,
                 created: new Date()
             };
 
+            // Add to list
             deadlines.push(deadline);
-            saveDeadlines();
-            renderDeadlines();
-            updateStats();
+            saveData();
 
             // Reset form
             form.reset();
             setDefaultDate();
 
-            showMessage('Deadline added successfully! 🎉', 'success');
-
-            // Send data back to bot (in real implementation)
-            // tg.sendData(JSON.stringify({action: 'add', deadline}));
+            // Update display
+            render();
+            showMessage(`Added "${title}" successfully!`, 'success');
         }
 
         function completeDeadline(id) {
-            const deadline = deadlines.find(d => d.id === id);
-            if (deadline) {
-                // Remove deadline instead of marking as completed
-                deadlines = deadlines.filter(d => d.id !== id);
-                saveDeadlines();
-                renderDeadlines();
-                updateStats();
-                showMessage(`"${deadline.title}" completed and removed! ✅`, 'success');
-
-                // Send completion to bot
-                // tg.sendData(JSON.stringify({action: 'complete', id}));
-            }
+            deadlines = deadlines.filter(d => d.id !== id);
+            saveData();
+            render();
+            showMessage('Deadline completed and removed!', 'success');
         }
 
-        function getDeadlineStatus(deadline) {
-            // Calculate status based on Moscow time
+        function getStatus(deadline) {
             const now = new Date();
-            const moscowOffset = 3 * 60; // 3 hours in minutes
-            const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
-            const moscowNow = new Date(utc + (moscowOffset * 60000));
-
-            const diff = deadline.date - moscowNow;
+            const diff = deadline.date - now;
             const hours = diff / (1000 * 60 * 60);
             const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
 
             if (hours < 0) return 'overdue';
-            if (days === 0 && hours >= 0) return 'today';
+            if (days === 0) return 'today';
             if (days <= 3) return 'urgent';
             if (days <= 7) return 'soon';
             return 'planned';
@@ -452,13 +361,29 @@
 
         function getStatusText(status) {
             const statusMap = {
-                overdue: '🔴 OVERDUE',
-                today: '🟠 DUE TODAY',
-                urgent: '🟡 URGENT',
-                soon: '🟢 SOON',
-                planned: '🔵 PLANNED'
+                overdue: 'OVERDUE',
+                today: 'DUE TODAY',
+                urgent: 'URGENT',
+                soon: 'SOON',
+                planned: 'PLANNED'
             };
-            return statusMap[status];
+            return statusMap[status] || 'UNKNOWN';
+        }
+
+        function getTimeLeft(deadline) {
+            const now = new Date();
+            const diff = deadline.date - now;
+            const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.ceil(diff / (1000 * 60 * 60));
+
+            if (diff < 0) {
+                const absDays = Math.abs(days);
+                return absDays > 0 ? `${absDays} days overdue` : 'Overdue';
+            } else if (days === 0) {
+                return hours > 0 ? `${hours} hours left` : 'Due now';
+            } else {
+                return `${days} days left`;
+            }
         }
 
         function formatDate(date) {
@@ -471,87 +396,79 @@
             });
         }
 
-        function getTimeLeft(deadline) {
-            const now = new Date();
-            const diff = deadline.date - now;
-            const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
-
-            if (days < 0) {
-                return `${Math.abs(days)} days overdue`;
-            } else if (days === 0) {
-                const hours = Math.ceil(diff / (1000 * 60 * 60));
-                return hours > 0 ? `${hours} hours left` : 'Due now';
-            } else {
-                return `${days} days left`;
-            }
+        function render() {
+            renderDeadlines();
+            updateStats();
         }
 
         function renderDeadlines() {
             if (deadlines.length === 0) {
-                deadlineContainer.innerHTML = `
+                container.innerHTML = `
                     <div class="empty-state">
-                        <div class="empty-state-icon">📝</div>
-                        <h3>No deadlines yet!</h3>
-                        <p>Add your first deadline using the form above.</p>
+                        <h3>No deadlines yet</h3>
+                        <p>Add your first deadline using the form above</p>
                     </div>
                 `;
                 return;
             }
 
-            // Sort deadlines by date
-            const sortedDeadlines = [...deadlines].sort((a, b) => a.date - b.date);
+            // Sort by date
+            const sorted = [...deadlines].sort((a, b) => a.date - b.date);
 
-            deadlineContainer.innerHTML = sortedDeadlines.map(deadline => {
-                const status = getDeadlineStatus(deadline);
+            container.innerHTML = sorted.map(deadline => {
+                const status = getStatus(deadline);
                 const statusText = getStatusText(status);
                 const timeLeft = getTimeLeft(deadline);
 
                 return `
                     <div class="deadline-item ${status}">
-                        <div class="deadline-header">
-                            <div class="deadline-title">${deadline.title}</div>
-                            <div class="deadline-status status-${status}">${statusText}</div>
-                        </div>
+                        <div class="deadline-title">${deadline.title}</div>
                         <div class="deadline-date">📅 ${formatDate(deadline.date)}</div>
                         <div class="deadline-date">⏰ ${timeLeft}</div>
-                        ${deadline.description ? `<div class="deadline-description">📝 ${deadline.description}</div>` : ''}
-                        <div class="deadline-actions">
-                            <button class="btn-small btn-complete" onclick="completeDeadline(${deadline.id})">
-                                ✅ Complete & Remove
-                            </button>
-                        </div>
+                        <div class="deadline-status status-${status}">${statusText}</div>
+                        ${deadline.description ? `<div class="deadline-date">📝 ${deadline.description}</div>` : ''}
+                        <button class="complete-btn" onclick="completeDeadline(${deadline.id})">
+                            ✅ Complete & Remove
+                        </button>
                     </div>
                 `;
             }).join('');
         }
 
         function updateStats() {
-            const overdue = deadlines.filter(d => getDeadlineStatus(d) === 'overdue').length;
-            const today = deadlines.filter(d => getDeadlineStatus(d) === 'today').length;
-            const urgent = deadlines.filter(d => getDeadlineStatus(d) === 'urgent').length;
+            if (deadlines.length === 0) {
+                statsContainer.style.display = 'none';
+                return;
+            }
 
-            document.getElementById('totalActive').textContent = deadlines.length;
-            document.getElementById('overdueCount').textContent = overdue;
-            document.getElementById('todayCount').textContent = today;
-            document.getElementById('urgentCount').textContent = urgent;
+            const stats = {
+                total: deadlines.length,
+                overdue: deadlines.filter(d => getStatus(d) === 'overdue').length,
+                today: deadlines.filter(d => getStatus(d) === 'today').length,
+                urgent: deadlines.filter(d => getStatus(d) === 'urgent').length
+            };
 
-            statsContainer.style.display = deadlines.length > 0 ? 'grid' : 'none';
+            document.getElementById('total-count').textContent = stats.total;
+            document.getElementById('overdue-count').textContent = stats.overdue;
+            document.getElementById('today-count').textContent = stats.today;
+            document.getElementById('urgent-count').textContent = stats.urgent;
+
+            statsContainer.style.display = 'grid';
         }
 
         function showMessage(text, type) {
-            const messageClass = type === 'success' ? 'success-message' : 'error-message';
-            messageContainer.innerHTML = `<div class="${messageClass}">${text}</div>`;
-
+            messageContainer.innerHTML = `<div class="message ${type}">${text}</div>`;
             setTimeout(() => {
                 messageContainer.innerHTML = '';
             }, 3000);
         }
 
-        function saveDeadlines() {
+        function saveData() {
             localStorage.setItem('deadlines', JSON.stringify(deadlines));
+            localStorage.setItem('nextId', nextId.toString());
         }
 
-        function loadDeadlines() {
+        function loadData() {
             const saved = localStorage.getItem('deadlines');
             if (saved) {
                 deadlines = JSON.parse(saved).map(d => ({
@@ -559,28 +476,12 @@
                     date: new Date(d.date),
                     created: new Date(d.created)
                 }));
-                nextId = Math.max(...deadlines.map(d => d.id), 0) + 1;
             }
-            renderDeadlines();
-            updateStats();
-        }
 
-        // Telegram Web App specific functions
-        if (tg.initDataUnsafe?.user) {
-            console.log('User:', tg.initDataUnsafe.user);
-        }
-
-        // Set up main button
-        tg.MainButton.text = "Send to Bot";
-        tg.MainButton.onClick(() => {
-            tg.sendData(JSON.stringify({
-                action: 'sync_deadlines',
-                deadlines: deadlines
-            }));
-        });
-
-        if (deadlines.length > 0) {
-            tg.MainButton.show();
+            const savedId = localStorage.getItem('nextId');
+            if (savedId) {
+                nextId = parseInt(savedId);
+            }
         }
     </script>
 </body>
