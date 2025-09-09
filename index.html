@@ -433,13 +433,20 @@
         }
 
         function getDeadlineStatus(deadline) {
+            // Calculate status based on Moscow time
             const now = new Date();
-            const daysLeft = Math.ceil((deadline.date - now) / (1000 * 60 * 60 * 24));
+            const moscowOffset = 3 * 60; // 3 hours in minutes
+            const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+            const moscowNow = new Date(utc + (moscowOffset * 60000));
 
-            if (daysLeft < 0) return 'overdue';
-            if (daysLeft === 0) return 'today';
-            if (daysLeft <= 3) return 'urgent';
-            if (daysLeft <= 7) return 'soon';
+            const diff = deadline.date - moscowNow;
+            const hours = diff / (1000 * 60 * 60);
+            const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
+
+            if (hours < 0) return 'overdue';
+            if (days === 0 && hours >= 0) return 'today';
+            if (days <= 3) return 'urgent';
+            if (days <= 7) return 'soon';
             return 'planned';
         }
 
