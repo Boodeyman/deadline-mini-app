@@ -51,17 +51,29 @@
         .form-group textarea {
             width: 100%;
             padding: 12px;
-            border: 2px solid #444;
+            border: 2px solid #444 !important;
             border-radius: 8px;
             font-size: 16px;
-            background: #1a1a1a;
-            color: #ffffff;
+            background: #333333 !important;
+            color: #000000 !important;
+            -webkit-text-fill-color: #000000 !important;
+            -webkit-appearance: none !important;
+            appearance: none !important;
         }
 
         .form-group input:focus,
         .form-group textarea:focus {
             outline: none;
-            border-color: #007AFF;
+            border-color: #007AFF !important;
+            background: #333333 !important;
+            color: #000000 !important;
+            -webkit-text-fill-color: #000000 !important;
+        }
+
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: #666666 !important;
+            -webkit-text-fill-color: #666666 !important;
         }
 
         .btn {
