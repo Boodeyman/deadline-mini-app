@@ -96,11 +96,29 @@
             border-color: #4facfe;
             box-shadow: 0 0 20px rgba(79, 172, 254, 0.3);
             transform: translateY(-2px);
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.15);
         }
 
         .form-group input::placeholder,
         .form-group textarea::placeholder {
             color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* Fix for datetime-local input */
+        .form-group input[type="datetime-local"] {
+            color: #ffffff !important;
+            background: rgba(255, 255, 255, 0.1) !important;
+        }
+
+        .form-group input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+            filter: invert(1);
+            opacity: 0.8;
+        }
+
+        /* Ensure all input text is white */
+        .form-group input:not(:placeholder-shown) {
+            color: #ffffff !important;
         }
 
         .form-group textarea {
